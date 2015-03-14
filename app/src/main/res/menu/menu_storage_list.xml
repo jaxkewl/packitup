@@ -1,0 +1,49 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.marshong.packitup.ui.StorageListActivity">
+
+    <item
+        android:id="@+id/add_location_menu_item"
+        android:icon="@drawable/ic_action_action_location"
+        android:orderInCategory="205"
+        android:title="Add Location"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/addStorageContainer"
+        android:icon="@drawable/ic_add_container_icon"
+        android:orderInCategory="210"
+        android:title="Add Storage"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/add_item"
+        android:icon="@drawable/ic_add_item"
+        android:orderInCategory="215"
+        android:title="Add Item"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="220"
+        android:title="@string/action_search"
+        app:showAsAction="ifRoom|withText" />
+
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_action_action_settings_applications"
+        android:orderInCategory="230"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom|withText" />
+
+    <item
+        android:id="@+id/action_db_dev"
+        android:icon="@drawable/ic_db_icon"
+        android:orderInCategory="240"
+        android:title="DB Dev"
+        app:showAsAction="ifRoom|withText" />
+
+</menu>

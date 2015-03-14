@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/hello_world_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ready_to_move_descr"
+        android:textSize="@dimen/title_size" />
+
+    <!--
+
+        <TextView
+            android:id="@+id/fromMainTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/fromButtonMain"
+            android:layout_alignBottom="@+id/fromButtonMain"
+            android:layout_centerHorizontal="true"
+            android:text="Seattle"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/toMainTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/fromMainTextView"
+            android:layout_alignStart="@+id/fromMainTextView"
+            android:layout_below="@+id/fromMainTextView"
+            android:layout_marginTop="74dp"
+            android:text="Baltimore"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <Button
+            android:id="@+id/fromButtonMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/hello_world_text"
+            android:text="From:" />
+
+        <Button
+            android:id="@+id/toButtonMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/toMainTextView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:text="To:" />
+
+
+        <View
+            android:id="@+id/horizLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/toButtonMain"
+            android:layout_marginTop="20dp"
+            android:background="@color/black" />
+    -->
+
+
+
+    <Button
+        android:id="@+id/button_martin_stuff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/storage_label" />
+
+
+</LinearLayout>

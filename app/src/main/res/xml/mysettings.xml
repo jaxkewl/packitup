@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="3"
+        android:dialogTitle="Select a text size"
+        android:entries="@array/text_size_list"
+        android:entryValues="@array/text_size_value_list"
+        android:key="textSize"
+        android:title="Text Size" />
+
+    <!--Location Text Color-->
+    <ListPreference
+        android:defaultValue="#0047AB"
+        android:dialogTitle="Select a color for the Location Text"
+        android:entries="@array/text_color_list"
+        android:entryValues="@array/text_color_value_list"
+        android:key="loc_text_color"
+        android:title="Location Text Color" />
+
+    <!--Container Text Color-->
+    <ListPreference
+        android:defaultValue="#8BA870"
+        android:dialogTitle="Select a color for the Container Text"
+        android:entries="@array/text_color_list"
+        android:entryValues="@array/text_color_value_list"
+        android:key="cont_text_color"
+        android:title="Container Text Color" />
+
+    <!--Item Text Color-->
+    <ListPreference
+        android:defaultValue="#000000"
+        android:dialogTitle="Select a color for the Item Text"
+        android:entries="@array/text_color_list"
+        android:entryValues="@array/text_color_value_list"
+        android:key="item_text_color"
+        android:title="Item Text Color" />
+
+</PreferenceScreen>
