@@ -75,6 +75,7 @@ public class DBDevActivity extends ActionBarActivity {
                     db.insertSampleLocations();
                     db.insertSampleContainers();
                     db.insertSampleItems();
+                    db.insertSampleOwners();
                     Toast.makeText(getActivity(),"Inserted sample locations, containers, and items.",Toast.LENGTH_SHORT).show();
                 }
             });

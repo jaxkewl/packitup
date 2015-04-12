@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.marshong.packitup.R;
@@ -27,6 +28,8 @@ public class MainActivity extends ActionBarActivity {
     Button toButton;
     Button mButtonStorage;
 
+    LinearLayout mLLMain;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,18 @@ public class MainActivity extends ActionBarActivity {
 
 /*        fromButton = (Button) findViewById(R.id.fromButtonMain);
         toButton = (Button) findViewById(R.id.toButtonMain);*/
+
+        // get the image asset from the assets folder
+        /*mLLMain = (LinearLayout)findViewById(R.id.ll_main);
+        try {
+            InputStream yellowBG = getAssets().open("drawable/yellow_textured_background.jpg");
+            Drawable drawableYellowBG = Drawable.createFromStream(yellowBG, null);
+            mLLMain.setBackground(drawableYellowBG);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Yellow Background missing " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }*/
+
 
 
         // process Box Activity

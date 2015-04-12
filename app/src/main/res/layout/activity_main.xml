@@ -6,6 +6,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/ll_main"
+    android:background="@drawable/background_gradient"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -74,6 +76,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:background="@drawable/nine_patch_two_button_style"
+        android:padding="5dp"
         android:text="@string/storage_label" />
 
 

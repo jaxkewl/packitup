@@ -34,6 +34,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //wipe from location tabl last.
         wipeAllLocations();
+
+        //wipe all owners
+        wipeAllOwners();
     }
 
 
@@ -61,6 +64,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.d(TAG, "onCreate " + DBContract.Version1.CREATE_TABLE_LOCATION);
         db.execSQL(DBContract.Version1.CREATE_TABLE_LOCATION);
+
+        Log.d(TAG, "onCreate " + DBContract.Version1.CREATE_TABLE_OWNER);
+        db.execSQL(DBContract.Version1.CREATE_TABLE_OWNER);
 
         Log.d(TAG, "onCreate " + DBContract.Version1.CREATE_TABLE_CONTAINER);
         db.execSQL(DBContract.Version1.CREATE_TABLE_CONTAINER);
@@ -187,6 +193,30 @@ public class DBHelper extends SQLiteOpenHelper {
 
         //insert new location
         db.insert(DBContract.Version1.LOCATION_TABLE, null, cv);
+
+        //close
+        db.close();
+    }
+
+    public void insertSampleOwners() {
+        Log.d(TAG, "inserting sample owners");
+        String[] sampleOwners = new String[]{"Martin", "Marge", "Marcus", "Mason"};
+        for (String str : sampleOwners) {
+            insertOwner(str);
+        }
+    }
+
+    public void insertOwner(String owner) {
+        Log.d(TAG, "insertOwner " + owner);
+
+        //get writeable ic_db_icon
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(DBContract.Version1.OWNER_NAME, owner);
+
+        //insert new location
+        db.insert(DBContract.Version1.OWNER_TABLE_NAME, null, cv);
 
         //close
         db.close();
@@ -332,7 +362,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    //this method will get all the containers
+    //this method will get all the items
     public ArrayList<Item> getAllItems() {
         Log.d(TAG, "Getting all items from " + DBContract.Version1.ITEM_TABLE + " using projection: " + DBContract.Version1.ITEM_PROJECTION.toString());
 
@@ -515,6 +545,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return containerID;
     }
 
+
+    private void wipeAllOwners() {
+        Log.d(TAG, "wiping all owners");
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DBContract.Version1.OWNER_TABLE_NAME, null, null);
+        db.close();
+    }
 
     private void wipeAllLocations() {
         Log.d(TAG, "wiping all locations");

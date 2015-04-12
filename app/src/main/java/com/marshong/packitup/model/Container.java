@@ -1,6 +1,7 @@
 package com.marshong.packitup.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by martin on 2/20/2015.
@@ -12,6 +13,8 @@ public class Container {
     private int id;
     private String descr;
     private ArrayList<Item> items;
+    private String owner;
+    private Date reminder;
 
 
     public Container(String name, String descr, String location) {
@@ -19,6 +22,22 @@ public class Container {
         setLocation(location);
         setDescr(descr);
         items = new ArrayList<>();
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public Date getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(Date reminder) {
+        this.reminder = reminder;
     }
 
     public ArrayList<Item> getAllItems() {
