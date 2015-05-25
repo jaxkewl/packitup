@@ -1,21 +1,17 @@
 package com.marshong.packitup.ui.location;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBHelper;
-import com.marshong.packitup.ui.storage.StorageListActivity;
 
 public class AddLocationActivity extends ActionBarActivity {
 
@@ -71,7 +67,7 @@ public class AddLocationActivity extends ActionBarActivity {
                                  Bundle savedInstanceState) {
 
             final View rootView = inflater.inflate(R.layout.fragment_add_location, container, false);
-            db = new DBHelper(getActivity());
+/*            db = new DBHelper(getActivity());
             mEditTextLocation = (EditText) rootView.findViewById(R.id.edit_text_location_name);
             rootView.findViewById(R.id.button_add_location_name).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -83,7 +79,7 @@ public class AddLocationActivity extends ActionBarActivity {
                     Intent intent = new Intent(getActivity(),StorageListActivity.class);
                     startActivity(intent);
                 }
-            });
+            });*/
 
             return rootView;
         }

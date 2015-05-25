@@ -48,6 +48,12 @@
             android:name=".ui.container.UpdateContainerActivity"
             android:label="@string/title_activity_update_container" >
         </activity>
+        <!-- The path to the provider -->
+        <provider
+            android:name=".data.DBProvider"
+            android:authorities="com.marshong.packitup"
+            android:exported="false" />
+        <!-- GOTCHA:set exported to false, otherwise, your content provider is accessible by other apps by default -->
     </application>
 
 </manifest>

@@ -36,7 +36,7 @@ public class StorageListActivity extends ActionBarActivity {
         Fragment fragment = fm.findFragmentById(R.id.storage_list_activity_container);
 
         if (null == fragment) {
-            fragment = new StorageListFragment();
+            fragment = new StorageListFragment2();
             fm.beginTransaction().add(R.id.storage_list_activity_container, fragment).commit();
         }
     }

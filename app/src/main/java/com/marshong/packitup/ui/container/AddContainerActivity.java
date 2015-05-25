@@ -1,27 +1,19 @@
 package com.marshong.packitup.ui.container;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBHelper;
-import com.marshong.packitup.model.Container;
-import com.marshong.packitup.ui.storage.StorageListActivity;
-
-import java.util.ArrayList;
 
 
 public class AddContainerActivity extends ActionBarActivity {
@@ -83,6 +75,7 @@ public class AddContainerActivity extends ActionBarActivity {
 
             dbHelper = new DBHelper(rootView.getContext());
 
+/*
             //get all the locations stored in the DB to use in the location spinner
             final ArrayList<String> allLocations = dbHelper.getAllLocationNames();
 
@@ -109,15 +102,18 @@ public class AddContainerActivity extends ActionBarActivity {
                     Container cont = new Container(contName, contDescr, locName);
                     dbHelper.insertContainer(cont);
 
+*/
 /*                    dbHelper.insertSampleLocations();
                     dbHelper.insertSampleContainers();
-                    dbHelper.insertSampleItems();*/
+                    dbHelper.insertSampleItems();*//*
+
                     Toast.makeText(getActivity(), "Added new Container " + cont, Toast.LENGTH_LONG);
 
                     Intent intent = new Intent(getActivity(),StorageListActivity.class);
                     startActivity(intent);
                 }
             });
+*/
 
 
             return rootView;

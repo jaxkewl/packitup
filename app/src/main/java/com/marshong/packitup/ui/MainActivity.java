@@ -72,7 +72,7 @@ public class MainActivity extends ActionBarActivity {
             Log.d(TAG, "first time running this app, preparing some things...");
             Toast.makeText(this, "App has not run before, executing first time actions", Toast.LENGTH_SHORT).show();
             db = new DBHelper(this);
-            db.insertDefaultLocAndCont();
+            //db.insertDefaultLocAndCont();
         }
     }
 

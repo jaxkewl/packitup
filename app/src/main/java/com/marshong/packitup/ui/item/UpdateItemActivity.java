@@ -1,6 +1,5 @@
 package com.marshong.packitup.ui.item;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -10,16 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.marshong.packitup.R;
-import com.marshong.packitup.data.DBContract;
 import com.marshong.packitup.data.DBHelper;
-import com.marshong.packitup.model.Item;
-import com.marshong.packitup.ui.storage.StorageListActivity;
 
 import java.util.ArrayList;
 
@@ -90,7 +84,7 @@ public class UpdateItemActivity extends ActionBarActivity {
 
             Log.d(TAG, "onCreateView updateItemFragment");
 
-            db = new DBHelper(getActivity());
+            /*db = new DBHelper(getActivity());
             final ArrayList<String> containerNames = db.getAllContainerNames();
 
             Bundle extras = getActivity().getIntent().getExtras();
@@ -134,7 +128,7 @@ public class UpdateItemActivity extends ActionBarActivity {
                     Intent intent = new Intent(getActivity(), StorageListActivity.class);
                     startActivity(intent);
                 }
-            });
+            });*/
 
 
             return rootView;

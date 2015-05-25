@@ -3,13 +3,11 @@ package com.marshong.packitup.ui.dbdev;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBHelper;
@@ -65,7 +63,7 @@ public class DBDevActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_dbdev, container, false);
-
+/*
             db = new DBHelper(getActivity());
 
             rootView.findViewById(R.id.button_insert_sample_entries).setOnClickListener(new View.OnClickListener() {
@@ -88,7 +86,7 @@ public class DBDevActivity extends ActionBarActivity {
                     db.insertDefaultLocAndCont();
                     Toast.makeText(getActivity(),"Wiped entire DB.",Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
 
 
             return rootView;

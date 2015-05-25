@@ -1,4 +1,3 @@
-<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,45 +10,23 @@
     tools:context="com.marshong.packitup.ui.StorageListActivity$PlaceholderFragment">
 
     <TextView
+        android:paddingBottom="20dp"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/box_storage_descr" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/storage_list_title"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/storage_list_title2" />
-
-    <View
-        android:id="@+id/horizLine"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@id/toButtonMain"
-        android:layout_marginTop="20dp"
-        android:background="@color/black" />
-
-
-
     <ListView
-        android:id="@+id/listViewStorageList"
+        android:id="@android:id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent">
 
-
-
+    </ListView>
 </LinearLayout>
--->
 
 
+
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -63,4 +40,4 @@
     tools:context="com.marshong.packitup.ui.StorageListActivity$PlaceholderFragment">
 
 
-</LinearLayout>
+</LinearLayout>-->

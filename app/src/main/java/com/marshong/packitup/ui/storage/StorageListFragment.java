@@ -2,29 +2,19 @@ package com.marshong.packitup.ui.storage;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.marshong.packitup.R;
-import com.marshong.packitup.data.DBContract;
 import com.marshong.packitup.data.DBHelper;
 import com.marshong.packitup.model.Container;
 import com.marshong.packitup.model.Item;
-import com.marshong.packitup.ui.item.UpdateItemActivity;
 
 import java.util.ArrayList;
 
@@ -56,6 +46,7 @@ public class StorageListFragment extends Fragment {
 
         //inflate the view first so you can use the view objects.
         View view = inflater.inflate(R.layout.fragment_storage_list, container, false);
+/*
 
         //get the shared prefs
         mPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -161,10 +152,10 @@ public class StorageListFragment extends Fragment {
                                     //setup an intent to modify the item. add some extras so we know which item we
                                     //clicked on.
                                     Intent intent = new Intent(getActivity(), UpdateItemActivity.class);
-                                    intent.putExtra(DBContract.Version1.ITEM_NAME, itemName);
-                                    intent.putExtra(DBContract.Version1.ITEM_DESCR, itemDescr);
-                                    intent.putExtra(DBContract.Version1.CONTAINER_ID, contId);
-                                    intent.putExtra(DBContract.Version1.CONTAINER_NAME, contName);
+                                    intent.putExtra(DBContract.Item.ITEM_NAME, itemName);
+                                    intent.putExtra(DBContract.Item.ITEM_DESCR, itemDescr);
+                                    intent.putExtra(DBContract.Container.CONTAINER_ID, contId);
+                                    intent.putExtra(DBContract.Container.CONTAINER_NAME, contName);
                                     startActivity(intent);
                                 }
                             });
@@ -176,18 +167,21 @@ public class StorageListFragment extends Fragment {
 
             //draw our divider line
             //setup our line view object to draw horizontal lines
+*/
 /*            View lineView = new View(getActivity());
             LinearLayout.LayoutParams lineparams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, 1);
             lineView.setLayoutParams(lineparams);
             lineView.setBackgroundColor(Color.BLACK);
-            ll.addView(lineView);*/
+            ll.addView(lineView);*//*
+
         }
 
         sv.addView(ll);
         getActivity().setContentView(sv);
 
-        /*
+        */
+/*
         //ArrayList<Container> containers = populateBoxes();
         ArrayList<Container> containers = ic_db_icon.getAllContainers();
 
@@ -218,9 +212,11 @@ public class StorageListFragment extends Fragment {
             cb.setText("I'm dynamic!");
             ll.addView(cb);
         }
-*/
+*//*
+
 
         //getActivity().setContentView(sv);
+*/
 
 
         return view;
