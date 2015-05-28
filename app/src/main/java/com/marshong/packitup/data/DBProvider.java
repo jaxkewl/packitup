@@ -110,6 +110,10 @@ public class DBProvider extends ContentProvider {
                 // Set the table name after you determine which uri type was chosen
                 queryBuilder.setTables(DBContract.Item.ITEM_TABLE);
                 break;
+            case LOCATION_NAME:
+                // Set the table name after out which table was chosen
+                queryBuilder.setTables(DBContract.Location.LOCATION_TABLE);
+                break;
             case LOCATION_ID:
                 // Set the table name after out which table was chosen
                 queryBuilder.setTables(DBContract.Location.LOCATION_TABLE);
@@ -259,7 +263,7 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Log.d(TAG, "inserting into the DB..." + values);
+        Log.d(TAG, "inserting into the DB... " + values);
 
         //get the object to the writeable DB
         SQLiteDatabase db = mDbHelper.getWritableDatabase();

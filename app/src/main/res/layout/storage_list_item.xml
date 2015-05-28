@@ -20,19 +20,19 @@
             android:id="@+id/textViewBoxName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Box Name Placeholder" />
+            android:text="Container: " />
 
         <TextView
             android:id="@+id/textViewRoomName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Room Name Placeholder" />
+            android:text="Location: " />
 
         <TextView
             android:id="@+id/textViewItemName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Item Name Placeholder"></TextView>
+            android:text="Item: "></TextView>
     </LinearLayout>
 
 </LinearLayout>

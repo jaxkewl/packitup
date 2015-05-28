@@ -85,37 +85,39 @@ public class AddItemActivity extends ActionBarActivity {
         }
 
         //do some form validation  before attempting to insert into the database
-        private void insertTaskToDb() {
+        private void insertItem() {
             //Note: inserting values has nothing to do with using the cursor loader. we need to use
             //the ContentResolver, Create/Update/Delete
 
 
+            String itemName = mEditTextItemName.getText().toString();
+            String itemDesc = mEditTextItemDescr.getText().toString();
+            int contId = (int) mSpinnerContainers.getSelectedItemId();
 
-            String taskName = mEditTextItemName.getText().toString();
-            String taskDesc = mEditTextItemDescr.getText().toString();
-            boolean validTask = true;
+            boolean validItem = true;
 
-            if (0 == taskName.trim().length()) {
+            if (0 == itemName.trim().length()) {
                 mEditTextItemName.setError("Enter a valid Item Name");
-                validTask = false;
+                validItem = false;
             }
 
-            if (0 == taskDesc.trim().length()) {
+            if (0 == itemDesc.trim().length()) {
                 mEditTextItemDescr.setError("Enter a valid Item Description");
-                validTask = false;
+                validItem = false;
             }
 
-            if (validTask) {
-                Log.d(TAG, "Adding a task: " + taskName + " " + taskDesc);
+            if (validItem) {
+                Log.d(TAG, "Adding an item: " + itemName + " " + itemDesc + " contId: " + contId);
 
-                //Note: TaskProvider needs a URI and ContentValues as parameters.
+                //Note: DBProvider needs a URI and ContentValues as parameters.
 
                 //First, create ContentValues to add data
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(DBContract.Item.ITEM_NAME, taskName);
-                contentValues.put(DBContract.Item.ITEM_DESCR, taskDesc);
+                contentValues.put(DBContract.Item.ITEM_NAME, itemName);
+                contentValues.put(DBContract.Item.ITEM_DESCR, itemDesc);
+                contentValues.put(DBContract.Item.CONTAINER_REF, contId);
 
-                //Second, get the URI to insert a task
+                //Second, get the URI to insert an item
                 getActivity().getContentResolver().insert(DBContract.Item.CONTENT_ITEM_URI, contentValues);
 
                 Intent intent = new Intent(getActivity(), StorageListActivity.class);
@@ -169,7 +171,7 @@ public class AddItemActivity extends ActionBarActivity {
             rootView.findViewById(R.id.button_add_item).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    insertTaskToDb();
+                    insertItem();
                 }
             });
         }

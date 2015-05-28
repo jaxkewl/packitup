@@ -1,17 +1,23 @@
 package com.marshong.packitup.ui.location;
 
+import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.marshong.packitup.R;
+import com.marshong.packitup.data.DBContract;
 import com.marshong.packitup.data.DBHelper;
+import com.marshong.packitup.ui.storage.StorageListActivity;
 
 public class AddLocationActivity extends ActionBarActivity {
 
@@ -62,24 +68,53 @@ public class AddLocationActivity extends ActionBarActivity {
         public PlaceholderFragment() {
         }
 
+
+        //do some form validation  before attempting to insert into the database
+        private void insertLoc() {
+            //Note: inserting values has nothing to do with using the cursor loader. we need to use
+            //the ContentResolver, Create/Update/Delete
+
+
+            String locName = mEditTextLocation.getText().toString();
+
+            boolean validTask = true;
+
+            if (0 == locName.trim().length()) {
+                mEditTextLocation.setError("Enter a valid Location Name");
+                validTask = false;
+            }
+
+            if (validTask) {
+                Toast.makeText(getActivity(), "Added new location: " + mEditTextLocation.getText(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Adding a location: " + locName);
+
+                //Note: TaskProvider needs a URI and ContentValues as parameters.
+
+                //First, create ContentValues to add data
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DBContract.Location.LOCATION_NAME, locName);   //add to container name
+
+                //Second, get the URI to insert a location
+                getActivity().getContentResolver().insert(DBContract.Location.CONTENT_LOCATION_URI, contentValues);
+
+                Intent intent = new Intent(getActivity(), StorageListActivity.class);
+                startActivity(intent);
+            }
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
             final View rootView = inflater.inflate(R.layout.fragment_add_location, container, false);
-/*            db = new DBHelper(getActivity());
+
             mEditTextLocation = (EditText) rootView.findViewById(R.id.edit_text_location_name);
             rootView.findViewById(R.id.button_add_location_name).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "adding new location: " + mEditTextLocation.getText());
-                    db.insertLocation(mEditTextLocation.getText().toString());
-                    Toast.makeText(getActivity(), "Added new location: " + mEditTextLocation.getText(), Toast.LENGTH_SHORT).show();
-                    //getActivity().finish();
-                    Intent intent = new Intent(getActivity(),StorageListActivity.class);
-                    startActivity(intent);
+                    insertLoc();
                 }
-            });*/
+            });
 
             return rootView;
         }
