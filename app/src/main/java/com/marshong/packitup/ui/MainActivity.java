@@ -50,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
         }*/
 
 
+        /*getActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.background_duct_tape));*/
 
         // process Box Activity
         mButtonStorage = (Button) findViewById(R.id.button_martin_stuff);

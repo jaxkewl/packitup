@@ -2,7 +2,32 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <!-- GOTCHA: use windowBackground instead of background, otherwise, every view will take on this image-->
+        <item name="android:windowBackground">@drawable/background_cardboard</item>
+
+        <!--Make the background image of the ActionBar look like duct tape-->
+        <item name="android:actionBarStyle">@style/duct_tape_action_bar</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/duct_tape_action_bar</item>
+    </style>
+
+    <!--
+        To create a single style (need to reference the style for each container/view in the layout)
+        1. download the image and put in drawable folder
+        2. create a .xml file in the drawable folder that points to the image.
+        3. reference .xml from 2 in this file (styles.xml)
+        4. point the container or view to this style
+    -->
+    <style name="Cardboard_background">
+        <item name="android:background">@drawable/background_cardboard</item>
+    </style>
+
+    <style name="duct_tape_action_bar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:background">@drawable/background_duct_tape</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@drawable/background_duct_tape</item>
     </style>
 
 </resources>
