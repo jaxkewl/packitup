@@ -5,15 +5,53 @@
     android:layout_height="match_parent"
     tools:context="com.marshong.packitup.ui.StorageListActivity"
     tools:ignore="MergeRootFrame"
-
     >
 
-
-    <FrameLayout
-        android:id="@+id/storage_list_activity_container"
+    <!-- Include a Nav Drawer-->
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
 
-        />
+        <!-- Main content on screen is a fragment -->
+        <RelativeLayout
+            android:id="@+id/contentRL"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <FrameLayout
+                android:id="@+id/storage_list_activity_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+        <!-- Navigation drawer -->
+        <RelativeLayout
+            android:id="@+id/drawerRL"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|start">
+
+            <!-- Drawer ListView -->
+            <ListView
+                android:id="@+id/drawerList"
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="#ffffff"
+                android:divider="#d4d4d6"
+                android:dividerHeight="1dp" />
+
+            <TextView
+                android:layout_above="@id/drawerList"
+                android:text="Locations..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.DrawerLayout>
 
 </RelativeLayout>

@@ -34,6 +34,7 @@ public class DBProvider extends ContentProvider {
 
     private static final int CONTAINER_ID = 200;
     private static final int CONTAINER_NAME = 201;
+    private static final int CONTAINER_FILTER = 202;
 
     private static final int LOCATION_ID = 300;
     private static final int LOCATION_NAME = 301;
@@ -60,6 +61,8 @@ public class DBProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, DBContract.PATH_CONTAINER, CONTAINER_NAME);
         uriMatcher.addURI(authority, DBContract.PATH_CONTAINER + "/#", CONTAINER_ID);
+        uriMatcher.addURI(authority, DBContract.PATH_CONTAINER_FILTERED , CONTAINER_FILTER);
+        //uriMatcher.addURI(authority, DBContract.PATH_CONTAINER + "/container_filter/", CONTAINER_FILTER);
 
         uriMatcher.addURI(authority, DBContract.PATH_LOCATION, LOCATION_NAME);
         uriMatcher.addURI(authority, DBContract.PATH_LOCATION + "/#", LOCATION_ID);
@@ -113,6 +116,10 @@ public class DBProvider extends ContentProvider {
             case LOCATION_NAME:
                 // Set the table name after out which table was chosen
                 queryBuilder.setTables(DBContract.Location.LOCATION_TABLE);
+
+                //Log.d(TAG, "selection: " + selection);
+
+
                 break;
             case LOCATION_ID:
                 // Set the table name after out which table was chosen
@@ -143,6 +150,13 @@ public class DBProvider extends ContentProvider {
                 queryBuilder.setTables(DBContract.Container.CONTAINER_TABLE);
                 break;
 
+            case CONTAINER_FILTER:
+                // Set the table name after out which table was chosen
+                queryBuilder.setTables(DBContract.Container.CONTAINER_TABLE);
+                //id = uri.getLastPathSegment();
+                //Log.d(TAG, "looking for CONTAINERS with Location ID: " + id);
+                //selectionArgs = new String[]{id};
+                break;
             case OWNER_ID:
                 // Set the table name after out which table was chosen
                 queryBuilder.setTables(DBContract.Owner.OWNER_TABLE);
@@ -248,6 +262,8 @@ public class DBProvider extends ContentProvider {
                 return DBContract.Container.CONTENT_CONTAINER_TYPE;
             case CONTAINER_NAME:
                 return DBContract.Container.CONTENT_CONTAINERS_TYPE;
+            case CONTAINER_FILTER:
+                return DBContract.Container.CONTENT_CONTAINER_TYPE;
             case OWNER_ID:
                 return DBContract.Owner.CONTENT_OWNER_TYPE;
             case OWNER_NAME:

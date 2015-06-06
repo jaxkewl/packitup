@@ -23,7 +23,7 @@ import com.marshong.packitup.ui.settings.SettingsActivity;
 
 public class StorageListActivity extends ActionBarActivity {
 
-    public final static String TAG = StorageListFragment.class.getSimpleName();
+    public final static String TAG = StorageListFragment2.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,10 @@ public class StorageListActivity extends ActionBarActivity {
             fragment = new StorageListFragment2();
             fm.beginTransaction().add(R.id.storage_list_activity_container, fragment).commit();
         }
+
+
     }
+
 
 
     @Override

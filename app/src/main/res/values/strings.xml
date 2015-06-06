@@ -9,6 +9,11 @@
 
     <!-- Begin string for each page -->
 
+    <!--Nav Drawer Strings-->
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+
+
 
     <!-- Main Activity Page -->
     <string name="from_string">From:</string>
@@ -17,7 +22,10 @@
     <string name="title_activity_from_main_activity2">FromMainActivity2</string>
     <string name="title_activity_from_main">FromMainActivity</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="storage_label">Martin\'s Stuff</string>
+    <string name="martin_stuff">Martin\'s Stuff</string>
+    <string name="marcus_stuff">Marcus\'s Stuff</string>
+    <string name="mason_stuff">Mason\'s Stuff</string>
+    <string name="marge_stuff">Marges\'s Stuff</string>
 
     <!-- Settings strings -->
     <string name="settings_screen_descr">Storage App Settings</string>

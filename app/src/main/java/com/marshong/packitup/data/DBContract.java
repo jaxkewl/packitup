@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
  * Then create an inner class for each table that enumerates its columns.
  */
 
-public class DBContract  {
+public class DBContract {
 
     // Name of the Content Provider, use package name by convention so that it's unique on device
     // kinda like domain name.
@@ -20,6 +20,7 @@ public class DBContract  {
     // A path that points to the task table.
     //Note: for multiple tables, you'll need another PATH, i.e. PATH_ANOTHERTABLE
     public static final String PATH_CONTAINER = "CONTAINER_TABLE";
+    public static final String PATH_CONTAINER_FILTERED = "CONTAINER_TABLE_FILTERED";
     public static final String PATH_LOCATION = "LOCATION_TABLE";
     public static final String PATH_ITEM = "ITEM_TABLE";
     public static final String PATH_OWNER = "OWNER_TABLE";
@@ -33,7 +34,7 @@ public class DBContract  {
     public static final int DB_VERSION = 1;
 
 
-    public static final class Item implements BaseColumns{
+    public static final class Item implements BaseColumns {
         // -----------------------------------
         // ITEMS
         // -----------------------------------
@@ -73,16 +74,23 @@ public class DBContract  {
                 ITEM_NAME,
                 ITEM_DESCR,
                 CONTAINER_REF};
+
+        //Note: here is the SQL for an inner join to get all the items from a specified location
+        //
+        //select * from ITEM_TABLE inner join CONTAINER_TABLE on CONTAINER_TABLE.CONTAINER_LOCATION = 1;
+        //             entries from ITEM_TABLE                     using CONTAINER_LOCATION of 1 as the ref.
+
     }
 
 
-    public static final class Container implements BaseColumns{
+    public static final class Container implements BaseColumns {
         // -----------------------------------
         // Container
         // -----------------------------------
         // Content Uri = Content Authority + Path
         //kinda like URL
         public static final Uri CONTENT_CONTAINER_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_CONTAINER).build();
+        public static final Uri CONTENT_CONTAINER_FILTER_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_CONTAINER_FILTERED ).build();
 
 
         //### container
@@ -124,7 +132,7 @@ public class DBContract  {
     }
 
 
-    public static final class Location implements BaseColumns{
+    public static final class Location implements BaseColumns {
         // -----------------------------------
         // LOCATION
         // -----------------------------------
@@ -155,7 +163,7 @@ public class DBContract  {
     }
 
 
-    public static final class Owner implements BaseColumns{
+    public static final class Owner implements BaseColumns {
         // -----------------------------------
         // OWNER
         // -----------------------------------
@@ -185,7 +193,7 @@ public class DBContract  {
     }
 
 
-    public static final class ItemUri implements BaseColumns{
+    public static final class ItemUri implements BaseColumns {
         // -----------------------------------
         // ITEM URI
         // -----------------------------------

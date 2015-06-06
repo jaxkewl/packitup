@@ -10,6 +10,7 @@
     tools:context="com.marshong.packitup.ui.StorageListActivity$PlaceholderFragment">
 
     <TextView
+        android:id="@+id/text_view_storage_title"
         android:paddingBottom="20dp"
         android:layout_gravity="center"
         android:layout_width="wrap_content"

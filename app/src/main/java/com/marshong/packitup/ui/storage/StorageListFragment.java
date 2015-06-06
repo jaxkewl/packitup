@@ -455,8 +455,8 @@ public class StorageListFragment extends Fragment {
             Container container = containers.get(position);
 
             if (null != container) {
-                TextView textViewRoom = (TextView) view.findViewById(R.id.textViewRoomName);
-                TextView textViewBox = (TextView) view.findViewById(R.id.textViewBoxName);
+                TextView textViewRoom = (TextView) view.findViewById(R.id.textViewLocName);
+                TextView textViewBox = (TextView) view.findViewById(R.id.textViewContName);
                 TextView textViewItem = (TextView) view.findViewById(R.id.textViewItemName);
 
                 textViewBox.setText(container.getName());

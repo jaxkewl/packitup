@@ -8,11 +8,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity"
-    >
+    tools:context=".MainActivity">
+
+
+
 
     <TextView
-        android:id="@+id/hello_world_text"
+        android:id="@+id/activity_main_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ready_to_move_descr"
@@ -71,14 +73,37 @@
     -->
 
 
-    <Button
-        android:id="@+id/button_martin_stuff"
+        <TextView
+            android:id="@+id/textview_martin_stuff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:padding="5dp"
+            android:text="@string/martin_stuff" />
+
+
+    <TextView
+        android:id="@+id/textview_marcus_stuff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/nine_patch_two_button_style"
         android:padding="5dp"
-        android:text="@string/storage_label" />
+        android:text="@string/marcus_stuff" />
 
+    <TextView
+        android:id="@+id/textview_mason_stuff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="5dp"
+        android:text="@string/mason_stuff" />
+
+    <TextView
+        android:id="@+id/textview_marge_stuff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="5dp"
+        android:text="@string/marge_stuff" />
 
 </LinearLayout>

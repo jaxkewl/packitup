@@ -10,6 +10,13 @@
 
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/duct_tape_action_bar</item>
+
+        <!--All the text colors-->
+        <item name="android:textColor">@color/black</item>
+
+        <!--Nav Drawer Background-->
+        <item name="android:activatedBackgroundIndicator">@drawable/background_cardboard</item>
+
     </style>
 
     <!--

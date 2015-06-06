@@ -2,6 +2,7 @@ package com.marshong.packitup.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -9,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marshong.packitup.R;
@@ -25,15 +26,23 @@ public class MainActivity extends ActionBarActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     Button fromButton;
-    Button toButton;
-    Button mButtonStorage;
+    TextView mMartinStorage;
+    TextView mMargeStorage;
+    TextView mMarcusStorage;
+    TextView mMasonStorage;
 
-    LinearLayout mLLMain;
+    TextView mTitleTextView;
+    Typeface tf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mTitleTextView = (TextView) findViewById(R.id.activity_main_title);
+        tf = Typeface.createFromAsset(getAssets(), "fonts/PermanentMarker.ttf");
+        mTitleTextView.setTypeface(tf, Typeface.BOLD);
+
 
 /*        fromButton = (Button) findViewById(R.id.fromButtonMain);
         toButton = (Button) findViewById(R.id.toButtonMain);*/
@@ -53,8 +62,18 @@ public class MainActivity extends ActionBarActivity {
         /*getActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.background_duct_tape));*/
 
         // process Box Activity
-        mButtonStorage = (Button) findViewById(R.id.button_martin_stuff);
-        mButtonStorage.setOnClickListener(new View.OnClickListener() {
+        /*mButtonStorage = (Button) findViewById(R.id.button_martin_stuff);*/
+        mMartinStorage = (TextView) findViewById(R.id.textview_martin_stuff);
+        mMasonStorage = (TextView) findViewById(R.id.textview_mason_stuff);
+        mMarcusStorage = (TextView) findViewById(R.id.textview_marcus_stuff);
+        mMargeStorage = (TextView) findViewById(R.id.textview_marge_stuff);
+
+        mMartinStorage.setTypeface(tf);
+        mMasonStorage.setTypeface(tf);
+        mMarcusStorage.setTypeface(tf);
+        mMargeStorage.setTypeface(tf);
+
+        mMartinStorage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, StorageListActivity.class);
@@ -131,3 +150,13 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 }
+
+
+
+/*
+
+Navigation Drawer
+1. Need  layout file.
+
+
+*/
