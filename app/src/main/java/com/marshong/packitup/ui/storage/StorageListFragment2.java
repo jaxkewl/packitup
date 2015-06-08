@@ -19,8 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +57,7 @@ public class StorageListFragment2 extends ListFragment implements LoaderManager.
 
     //these class fields are related to the nav drawer
     private DrawerLayout mDrawerLayout;
-    private RelativeLayout mDrawerRL;
+    private LinearLayout mDrawerRL;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private String[] mNavDrawerItems = {"Item 1", "Item 2", "Item 3", "Item 4"};
@@ -122,7 +122,7 @@ public class StorageListFragment2 extends ListFragment implements LoaderManager.
         mDrawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawerLayout);
 
         // RelativeLayout container that holds the Nav drawer menu
-        mDrawerRL = (RelativeLayout) getActivity().findViewById(R.id.drawerRL);
+        mDrawerRL = (LinearLayout) getActivity().findViewById(R.id.drawerRL);
 
         // Nav drawer ListView
         mDrawerList = (ListView) getActivity().findViewById(R.id.drawerList);

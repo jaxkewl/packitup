@@ -10,6 +10,7 @@
     tools:context="com.marshong.packitup.ui.AddLocationActivity$PlaceholderFragment">
 
     <TextView
+        android:id="@+id/text_view_add_location_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_location_title"

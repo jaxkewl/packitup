@@ -4,6 +4,7 @@ package com.marshong.packitup.ui.item;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBContract;
@@ -26,6 +28,8 @@ import com.marshong.packitup.data.DBHelper;
 import com.marshong.packitup.ui.storage.StorageListActivity;
 
 public class AddItemActivity extends ActionBarActivity {
+
+    Typeface tf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +129,13 @@ public class AddItemActivity extends ActionBarActivity {
             }
         }
 
+        private void setTypeFace(View rootView) {
+            //get the font from the assets folder and set the font type
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), StorageListActivity.fontLoc);
+            TextView textViewTitle = (TextView) rootView.findViewById(R.id.text_view_add_item_title);
+            textViewTitle.setTypeface(tf, Typeface.BOLD);
+        }
+
         private void init(View rootView) {
 
             //we want to use a cursor loader adapter to map the data (ContentProvider to the View)
@@ -174,6 +185,8 @@ public class AddItemActivity extends ActionBarActivity {
                     insertItem();
                 }
             });
+
+            setTypeFace(rootView);
         }
 
         @Override

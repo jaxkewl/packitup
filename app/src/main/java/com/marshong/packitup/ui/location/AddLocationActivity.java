@@ -2,6 +2,7 @@ package com.marshong.packitup.ui.location;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marshong.packitup.R;
@@ -68,6 +70,12 @@ public class AddLocationActivity extends ActionBarActivity {
         public PlaceholderFragment() {
         }
 
+        private void setTypeFace(View rootView) {
+            //get the font from the assets folder and set the font type
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), StorageListActivity.fontLoc);
+            TextView textViewTitle = (TextView) rootView.findViewById(R.id.text_view_add_location_title);
+            textViewTitle.setTypeface(tf, Typeface.BOLD);
+        }
 
         //do some form validation  before attempting to insert into the database
         private void insertLoc() {
@@ -115,6 +123,8 @@ public class AddLocationActivity extends ActionBarActivity {
                     insertLoc();
                 }
             });
+
+            setTypeFace(rootView);
 
             return rootView;
         }

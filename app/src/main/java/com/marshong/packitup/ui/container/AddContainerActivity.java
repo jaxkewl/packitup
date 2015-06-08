@@ -4,6 +4,7 @@ package com.marshong.packitup.ui.container;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBContract;
@@ -127,6 +129,13 @@ public class AddContainerActivity extends ActionBarActivity {
             }
         }
 
+        private void setTypeFace(View rootView) {
+            //get the font from the assets folder and set the font type
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), StorageListActivity.fontLoc);
+            TextView textViewTitle = (TextView) rootView.findViewById(R.id.text_view_add_container_title);
+            textViewTitle.setTypeface(tf, Typeface.BOLD);
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -175,7 +184,7 @@ public class AddContainerActivity extends ActionBarActivity {
             });
 */
 
-
+            setTypeFace(rootView);
             return rootView;
         }
 

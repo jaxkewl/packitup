@@ -6,7 +6,7 @@
     android:layout_marginLeft="20dp">
 
     <TextView
-        android:id="@android:id/text1"
+        android:id="@+id/text_view_view_pager_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"

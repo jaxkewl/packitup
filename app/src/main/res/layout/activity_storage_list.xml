@@ -1,11 +1,18 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.marshong.packitup.ui.StorageListActivity"
-    tools:ignore="MergeRootFrame"
-    >
+    tools:ignore="MergeRootFrame">
+
+    <TextView
+        android:id="@+id/text_view_location_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""/>
+
 
     <!-- Include a Nav Drawer-->
     <android.support.v4.widget.DrawerLayout
@@ -13,26 +20,60 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Main content on screen is a fragment -->
-        <RelativeLayout
-            android:id="@+id/contentRL"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+        <!--This is the view pager that will display containers depending which location
+            has been selected from the Navigation Drawer-->
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-            <FrameLayout
-                android:id="@+id/storage_list_activity_container"
+            <!--If you want an "indicator" that displays the pages available at the top
+                as shown in the screenshot above, you need to include a nested indicator
+                view called a PagerTabStrip:-->
+            <android.support.v4.view.PagerTabStrip
+                android:id="@+id/pager_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp" />
 
-        </RelativeLayout>
+        </android.support.v4.view.ViewPager>
+
+
+        <!-- Main content on screen is a fragment -->
+        <!--        <RelativeLayout
+                    android:id="@+id/contentRL"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
+                    <FrameLayout
+                        android:id="@+id/storage_list_activity_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+    </RelativeLayout>-->
 
         <!-- Navigation drawer -->
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/drawerRL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:layout_gravity="left|start">
+
+            <!--Title of the Drawer List-->
+            <TextView
+                android:id="@+id/text_view_nav_drawer_title"
+                android:layout_width="240dp"
+                android:layout_height="50dp"
+
+                android:textSize="@dimen/abc_text_size_large_material"
+                android:background="@drawable/background_cardboard"
+                android:text="Locations..." />
 
             <!-- Drawer ListView -->
             <ListView
@@ -40,18 +81,16 @@
                 android:layout_width="240dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:background="#ffffff"
-                android:divider="#d4d4d6"
+                android:background="@drawable/background_cardboard"
+                android:divider="@color/black"
                 android:dividerHeight="1dp" />
 
-            <TextView
-                android:layout_above="@id/drawerList"
-                android:text="Locations..."
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
-        </RelativeLayout>
+
+        </LinearLayout>
+
+
 
     </android.support.v4.widget.DrawerLayout>
 
-</RelativeLayout>
+</LinearLayout>
