@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBContract;
@@ -70,6 +70,8 @@ public class StorageListFragment2 extends ListFragment implements LoaderManager.
     private String mSelectedLocName;
     private int mSelectedContainerId = 0;   //this comes from the view pager
 
+
+    private View mView;
 
     public StorageListFragment2() {
         //required empty constructor
@@ -174,7 +176,8 @@ public class StorageListFragment2 extends ListFragment implements LoaderManager.
 
         if (c.moveToFirst()) {
             mSelectedLocationId = c.getInt(c.getColumnIndexOrThrow(DBContract.Location.LOCATION_ID));
-            Toast.makeText(getActivity(), "Selected " + mSelectedLocName + "   pos:" + position + "   id: " + mSelectedLocationId, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getActivity(), "Selected " + mSelectedLocName + "   pos:" + position + "   id: " + mSelectedLocationId, Toast.LENGTH_LONG).show();
+            Snackbar.make(mView,"Selected " + mSelectedLocName + "   pos:" + position + "   id: " + mSelectedLocationId,Snackbar.LENGTH_LONG).show();
 
         }
         //close the cursor
@@ -319,6 +322,8 @@ public class StorageListFragment2 extends ListFragment implements LoaderManager.
 
         //inflate the view first so you can use the view objects.
         View view = inflater.inflate(R.layout.fragment_storage_list, container, false);
+
+        mView = view;
 
         //get the shared prefs
         mPref = PreferenceManager.getDefaultSharedPreferences(getActivity());

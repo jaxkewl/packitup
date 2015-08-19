@@ -1,9 +1,12 @@
 package com.marshong.packitup.ui.storage;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -17,7 +20,12 @@ import android.widget.TextView;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBContract;
+import com.marshong.packitup.ui.container.AddContainerActivity;
+import com.marshong.packitup.ui.item.AddItemActivity;
 import com.marshong.packitup.ui.item.UpdateItemActivity;
+import com.marshong.packitup.util.Constants;
+
+import java.util.Map;
 
 /**
  * A fragment representing a section of the ViewPager
@@ -77,8 +85,62 @@ public class SectionFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
 
+    //@OnClick(R.id.fab_add_item)
+    public void addItem() {
+        Log.d(TAG, "FAB - Floating action button clicked, addingItem containerId: " + mContainerId + " locationID: " + mLocationId);
+
+        Intent intent = new Intent(getActivity(), AddItemActivity.class);
+
+        Bundle args = new Bundle();
+        //pass to the UpdateItemActivity the container Id, location Id, and item Id.
+        args.putInt(SectionFragment.LOCATION_ID, mLocationId);
+        intent.putExtras(args);
+
+        startActivity(intent);
+
+    }
+
+
+    public void addContainer() {
+        Log.d(TAG, "FAB- Floating action button clicked, addingContainer containerId: " + mContainerId + " locationID: " + mLocationId);
+
+        Intent intent = new Intent(getActivity(), AddContainerActivity.class);
+
+        Bundle args = new Bundle();
+        //pass to the UpdateItemActivity the container Id, location Id, and item Id.
+        args.putInt(SectionFragment.LOCATION_ID, mLocationId);
+        intent.putExtras(args);
+
+        startActivity(intent);
+
+    }
+
     private void init(View rootView) {
-        Log.d(TAG, "init...");
+        Log.d(TAG, "init... containerId" + mContainerId + " locationID " + mLocationId);
+
+        //add item FAB
+        FloatingActionButton mFabAddItem = (FloatingActionButton) rootView.findViewById(R.id.fab_add_item);
+        if (null != mFabAddItem) {
+            mFabAddItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addItem();
+                }
+            });
+        }
+
+
+        //add container FAB
+        FloatingActionButton mFabAddContainer = (FloatingActionButton) rootView.findViewById(R.id.fab_add_container);
+        if (null != mFabAddContainer) {
+            mFabAddContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addContainer();
+                }
+            });
+        }
+
 
         //get the font from the assets folder and set the font type
         tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/PermanentMarker.ttf");
@@ -140,4 +202,39 @@ public class SectionFragment extends Fragment implements SwipeRefreshLayout.OnRe
     public void onRefresh() {
 
     }
+
+    private int getLocationIdFromSharedPref() {
+        Log.d(TAG, "getLocationIdFromSharedPref...");
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, Context.MODE_PRIVATE);
+        int locId = Integer.parseInt(sharedPref.getString(Constants.locationId, Integer.toString(0)));
+        return locId;
+    }
+
+    //shared preferences section
+    private void displayAllSharedPref() {
+        Log.d(TAG, "displayAllSharedPref called");
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, Context.MODE_PRIVATE);
+
+        Map<String, ?> keys = sharedPref.getAll();
+
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Log.d(TAG, "***************** ***************** " + entry.getKey() + ": " + entry.getValue().toString());
+        }
+    }
+
+    private void saveIds(String containerId, String locationId) {
+        Log.d(TAG, "saveIds called... containerId: " + containerId + " locationId: " + locationId);
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(Constants.locationId, locationId);
+        editor.putString(Constants.containerId, containerId);
+
+        editor.commit();
+
+        displayAllSharedPref();
+    }
+
+
 }

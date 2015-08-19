@@ -1,20 +1,23 @@
 package com.marshong.packitup.ui.storage;
 
-import android.app.Fragment;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -30,9 +33,14 @@ import com.marshong.packitup.ui.dbdev.DBDevActivity;
 import com.marshong.packitup.ui.item.AddItemActivity;
 import com.marshong.packitup.ui.location.AddLocationActivity;
 import com.marshong.packitup.ui.settings.SettingsActivity;
+import com.marshong.packitup.util.Constants;
+
+import java.util.Map;
+
+import butterknife.ButterKnife;
 
 
-public class StorageListActivity extends ActionBarActivity {
+public class StorageListActivity extends AppCompatActivity {
 
     public final static String TAG = StorageListActivity.class.getSimpleName();
 
@@ -61,6 +69,9 @@ public class StorageListActivity extends ActionBarActivity {
     private int mContainerCount;
     private String[] mContainerNames;
     private String[] mContainerIds;
+
+    //Floating Action Button
+    //FloatingActionButton mFabAddItem;
 
     private void populateContainerInfo() {
         Log.d(TAG, "populateContainerInfo with locationId:" + mSelectedLocationId);
@@ -183,9 +194,43 @@ public class StorageListActivity extends ActionBarActivity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Log.d(TAG, "drawerItemClickListener position: " + position + " id: " + id);
+
+            //save off the location ID
+            //since we just selected a new location, we can default the container ID to be 0
+            saveIds(0, (int) id);
+            //selectItemUsingSharedPref();
 
             selectItem(position);
         }
+    }
+
+
+    /**
+     * Handle drawer item selection.
+     * 1. Set the name of the location the user selected
+     * 2. Find the ID of the Location using the location name from the location table
+     * by using the LOCATION URI.
+     */
+    private void selectItemUsingSharedPref() {
+        Log.d(TAG, "selectItemUsingSharedPref");
+
+        mSelectedLocationId = getLocationIdFromSharedPref();
+
+        Toast.makeText(this, "Selected id: " + mSelectedLocationId, Toast.LENGTH_LONG).show();
+
+        //after a new location has been selected, we need to update the information that will be passed to
+        //the viewpager
+        populateContainerInfo();
+
+        //start a new fragment with the new location
+        loadViewPager();    //Note: we still want to load the view pager even if we just created a new location
+        //      because, we want the correct view pager to load (blank in this case)
+
+
+        TextView textViewLocName = (TextView) findViewById(R.id.text_view_location_name);
+        textViewLocName.setText(mSelectedLocName);
+        textViewLocName.setTypeface(tf);
     }
 
 
@@ -218,8 +263,13 @@ public class StorageListActivity extends ActionBarActivity {
                 null);
 
         if (c.moveToFirst()) {
+
+            //View parentLayout = findViewById(R.id.root_view);
+
             mSelectedLocationId = c.getInt(c.getColumnIndexOrThrow(DBContract.Location.LOCATION_ID));
-            Toast.makeText(this, "Selected " + mSelectedLocName + "   pos:" + position + "   id: " + mSelectedLocationId, Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.container), "Selected " + mSelectedLocName + "   pos:" + position + "   id: " + mSelectedLocationId, Snackbar.LENGTH_LONG).show();
+            //Snackbar.make(this, "Selected " + mSelectedLocName + "   pos:" + Integer.toString(position) + "   id: " + Integer.toString(mSelectedLocationId), Snackbar.LENGTH_LONG).show();
+            //Toast.makeText(this, "Selected " + mSelectedLocName + "   pos:" + position + "   id: " + mSelectedLocationId, Toast.LENGTH_LONG).show();
 
         }
         //close the cursor
@@ -252,6 +302,16 @@ public class StorageListActivity extends ActionBarActivity {
         mViewPager.destroyDrawingCache();
         mViewPager.setAdapter(mAppSectionsPagerAdapter);
 
+//        mFabAddItem = (FloatingActionButton) findViewById(R.id.fab_add_item);
+
+/*        if (null != mFabAddItem) {
+            mFabAddItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addItem();
+                }
+            });
+        }*/
     }
 
 
@@ -261,6 +321,18 @@ public class StorageListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_storage_list);
 
         Log.d(TAG, "onCreate StorageListActivity");
+
+        ButterKnife.bind(this);
+        //mFabAddItem = (FloatingActionButton) findViewById(R.id.fab_add_item);
+
+/*        if (null != mFabAddItem) {
+            mFabAddItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addItem();
+                }
+            });
+        }*/
 
 /*        FragmentManager fm = getFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.storage_list_activity_container);
@@ -285,6 +357,7 @@ public class StorageListActivity extends ActionBarActivity {
         //if there are locations in the db, then populate something on the screen so it doesnt show up blank
         if (0 != mLocationCount) {
             selectItem(0);
+            //selectItemUsingSharedPref();
         }
 
         //load the view pager with the current location Id
@@ -299,6 +372,23 @@ public class StorageListActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_storage_list, menu);
         Log.d(TAG, "onCreateOptionsMenu StorageListActivity");
+
+        // GOTCHA:SearchView is not supported before the Honeycomb OS release.
+        // search widget is available only in Android 3.0 (API Level 11) and higher
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            Log.d(TAG, "onCreateOptionsMenu inner called");
+
+            // TODO: Get the SearchView and set the searchable configuration
+            // Your code here
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+
+            // TODO: Register the search configuration
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+            // Do not iconify the widget; expand it by default!
+            searchView.setIconifiedByDefault(false);
+        }
 
         return true;
     }
@@ -328,11 +418,8 @@ public class StorageListActivity extends ActionBarActivity {
             args.putInt(SectionFragment.LOCATION_ID, mSelectedLocationId);
             intent.putExtras(args);
 
-
             startActivity(intent);
-        } else if (id == R.id.action_search) {
-            Toast.makeText(StorageListActivity.this, "Selected Search Action", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.add_item) {
+        }          else if (id == R.id.add_item) {
             Intent intent = new Intent(StorageListActivity.this, AddItemActivity.class);
 
             Bundle args = new Bundle();
@@ -349,24 +436,176 @@ public class StorageListActivity extends ActionBarActivity {
             startActivity(intent);
         }
 
-
+        if (id == R.id.action_search) {
+            onSearchRequested();
+            //Toast.makeText(StorageListActivity.this, "Selected Search Action", Toast.LENGTH_SHORT).show();
+            Snackbar.make(findViewById(R.id.container), "Selected Search Action", Snackbar.LENGTH_LONG).show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
 
-        public PlaceholderFragment() {
-        }
+    //@OnClick(R.id.fab_add_item)
+/*    public void addItem() {
+        Log.d(TAG, "Floating action button clicked, uploading image containerId:    locationID: " + mSelectedLocationId);
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            Log.d(TAG, "placeHolderFragment, inflating fragment");
-            View rootView = inflater.inflate(R.layout.fragment_storage_list, container, false);
-            return rootView;
+        Intent intent = new Intent(StorageListActivity.this, AddItemActivity.class);
+
+        Bundle args = new Bundle();
+        //pass to the UpdateItemActivity the container Id, location Id, and item Id.
+        args.putInt(SectionFragment.LOCATION_ID, mSelectedLocationId);
+        intent.putExtras(args);
+
+        startActivity(intent);
+
+    }*/
+
+    //shared preferences section
+    public void displayAllSharedPref() {
+        Log.d(TAG, "displayAllSharedPref called");
+
+        SharedPreferences sharedPref = getSharedPreferences(Constants.sharedPrefName, Context.MODE_PRIVATE);
+
+        Map<String, ?> keys = sharedPref.getAll();
+
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Log.d(TAG, "***************** ***************** " + entry.getKey() + ": " + entry.getValue().toString());
         }
     }
-}
+
+    public void saveIds(int containerId, int locationId) {
+        Log.d(TAG, "saveIds called... containerId: " + containerId + " locationId: " + locationId);
+
+        SharedPreferences sharedPref = getSharedPreferences(Constants.sharedPrefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(Constants.locationId, locationId);
+        editor.putInt(Constants.containerId, containerId);
+
+        editor.commit();
+
+        displayAllSharedPref();
+    }
+
+    private int getLocationIdFromSharedPref() {
+        Log.d(TAG, "getLocationIdFromSharedPref...");
+        SharedPreferences sharedPref = getSharedPreferences(Constants.sharedPrefName, Context.MODE_PRIVATE);
+        return sharedPref.getInt(Constants.locationId, 0);
+    }
+
+
+
+    //search activity methods
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+        handleIntent(intent);
+    }
+
+
+
+    /**
+     * Helper method to handle a search query intent and a search suggestion click event.
+     * <p/>
+     * Note: this method does not get called when search suggestions is coming up with suggestions.
+     * this method is only called if the user clicks on a search suggestion (ACTION_VIEW)
+     * or presses enter (ACTION_SEARCH)
+     *
+     * @param intent
+     */
+    private void handleIntent(Intent intent) {
+        Log.d(TAG, "handleIntent called with " + intent.toString() + "         " + intent.getAction());
+
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            // TODO: Handle a click on a search suggestion; should launch activity to show word and definition
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.d(TAG, "Selected " + intent.getData() + "     ");
+            Snackbar.make(findViewById(R.id.container), "Selected " + intent.getData() + "     " + query, Snackbar.LENGTH_LONG).show();
+
+            //Note: when this is called, we know the Row ID of which word was chosen. That's all we need.
+
+            //get the uri that is stored in the intent, and pass that to the handling activity which
+            //will display the definition.
+            //Note: Uri is only stored in the intent if searchSuggestIntentData
+            // was defined in the searchable.xml
+            //Intent defnIntent = new Intent(SearchableActivity.this, DefinitionActivity.class);
+            //defnIntent.setData(intent.getData());
+            //startActivity(defnIntent);
+
+        } else if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            // TODO: Handle a search query and show results
+            //this is what gets called when user presses enter, the suggestions are ignored.
+
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            showResults(query);
+        }
+    }
+
+    /**
+     * Searches the dictionary and displays results for the given query.
+     *
+     * @param query The search query
+     */
+    private void showResults(final String query) {
+        Log.d(TAG, "showResults called with " + query + " and URI is " );
+        //Toast.makeText(this, query, Toast.LENGTH_LONG).show();
+
+        /*Cursor cursor = managedQuery(DBContract.PATH_ITEM_URI, null, null,
+                new String[]{query}, null);
+
+        if (cursor == null) {
+            Log.d(TAG, "empty list");
+            // TODO: Update the activity to show that there are no results
+
+            // Refer to this to implement the empty list view pattern:
+            // http://developer.android.com/reference/android/widget/AdapterView.html#setEmptyView(android.view.View)
+
+            // Your code here
+            //add this to the layout
+            *//*<TextView
+            android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No Results"/>*//*
+
+        } else {
+            Log.d(TAG, "results list");
+            // Update the activity to show the search results
+
+            // TODO: Specify the columns to display in the result
+            String[] fromFields = new String[]{DictionaryDatabase.KEY_WORD, DictionaryDatabase.KEY_DEFINITION};   //name of the table column
+
+            // TODO: Specify the corresponding layout elements for the above columns
+            int[] toFields = new int[]{R.id.word, R.id.definition};
+
+            // TODO: Create a simple cursor adapter for the definitions and apply them to the ListView
+            mAdapter = new SimpleCursorAdapter(
+                    this,
+                    R.layout.activity_definition,
+                    cursor,
+                    fromFields,
+                    toFields);
+
+            mListView.setAdapter(mAdapter);
+
+            // TODO: Define the on-click listener for the list items
+            // Click on a search result should take you to a new activity that displays the word and definition.
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d(TAG, "@@@@@@@@@@@@@@@@ onClick called...");
+                    Intent defnIntent = new Intent(SearchableActivity.this, DefinitionActivity.class);
+                    Uri data = Uri.parse(DictionaryProvider.CONTENT_URI + "/" + l);
+                    defnIntent.setData(data);
+                    startActivity(defnIntent);
+                }
+            });*/
+
+            // For the on-click behavior, refer to:
+            // http://developer.android.com/reference/android/widget/AdapterView.OnItemClickListener.html
+        }
+    }
+
+
+

@@ -4,27 +4,41 @@
     tools:context="com.marshong.packitup.ui.StorageListActivity">
 
     <item
+        android:id="@+id/action_search"
+        android:title="@string/action_search"
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:orderInCategory="100"
+        app:showAsAction="always|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:orderInCategory="200"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/add_location_menu_item"
         android:icon="@drawable/ic_action_action_location"
         android:orderInCategory="205"
         android:title="Add Location"
-        app:showAsAction="always|withText" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/addStorageContainer"
         android:icon="@drawable/ic_add_container_icon"
         android:orderInCategory="210"
         android:title="Add Storage"
-        app:showAsAction="always|withText" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/add_item"
         android:icon="@drawable/ic_add_item"
         android:orderInCategory="215"
         android:title="Add Item"
-        app:showAsAction="always|withText" />
+        app:showAsAction="ifRoom" />
 
-    <item
+<!--    <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
         android:orderInCategory="220"
@@ -37,7 +51,7 @@
         android:icon="@drawable/ic_action_action_settings_applications"
         android:orderInCategory="230"
         android:title="@string/action_settings"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom|withText" />-->
 
     <item
         android:id="@+id/action_db_dev"

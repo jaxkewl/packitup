@@ -3,19 +3,19 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- GOTCHA: use windowBackground instead of background, otherwise, every view will take on this image-->
-        <item name="android:windowBackground">@drawable/background_cardboard</item>
+        <!--<item name="android:windowBackground">@drawable/background_cardboard</item>-->
 
-        <!--Make the background image of the ActionBar look like duct tape-->
+<!--        &lt;!&ndash;Make the background image of the ActionBar look like duct tape&ndash;&gt;
         <item name="android:actionBarStyle">@style/duct_tape_action_bar</item>
 
-        <!-- Support library compatibility -->
-        <item name="actionBarStyle">@style/duct_tape_action_bar</item>
+        &lt;!&ndash; Support library compatibility &ndash;&gt;
+        <item name="actionBarStyle">@style/duct_tape_action_bar</item>-->
 
-        <!--All the text colors-->
+<!--        &lt;!&ndash;All the text colors&ndash;&gt;
         <item name="android:textColor">@color/black</item>
 
-        <!--Nav Drawer Background-->
-        <item name="android:activatedBackgroundIndicator">@drawable/background_cardboard</item>
+        &lt;!&ndash;Nav Drawer Background&ndash;&gt;
+        <item name="android:activatedBackgroundIndicator">@drawable/background_cardboard</item>-->
 
     </style>
 
@@ -26,15 +26,22 @@
         3. reference .xml from 2 in this file (styles.xml)
         4. point the container or view to this style
     -->
-    <style name="Cardboard_background">
+<!--    <style name="Cardboard_background">
         <item name="android:background">@drawable/background_cardboard</item>
     </style>
 
     <style name="duct_tape_action_bar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:background">@drawable/background_duct_tape</item>
 
-        <!-- Support library compatibility -->
+        &lt;!&ndash; Support library compatibility &ndash;&gt;
         <item name="background">@drawable/background_duct_tape</item>
+    </style>-->
+
+
+    <style name="MyApp.AutoCompleteTextView" parent="Widget.AppCompat.Light.AutoCompleteTextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:background">@color/light_gray</item>
     </style>
 
 </resources>

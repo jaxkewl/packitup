@@ -11,8 +11,6 @@
     tools:context=".MainActivity">
 
 
-
-
     <TextView
         android:id="@+id/activity_main_title"
         android:layout_width="wrap_content"
@@ -73,13 +71,13 @@
     -->
 
 
-        <TextView
-            android:id="@+id/textview_martin_stuff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:padding="5dp"
-            android:text="@string/martin_stuff" />
+    <TextView
+        android:id="@+id/textview_martin_stuff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="5dp"
+        android:text="@string/martin_stuff" />
 
 
     <TextView
@@ -105,5 +103,13 @@
         android:layout_marginTop="20dp"
         android:padding="5dp"
         android:text="@string/marge_stuff" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_plus_sign" />
 
 </LinearLayout>

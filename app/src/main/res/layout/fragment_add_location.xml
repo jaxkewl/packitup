@@ -16,11 +16,17 @@
         android:text="@string/add_location_title"
         android:textSize="@dimen/title_size" />
 
-    <EditText
-        android:id="@+id/edit_text_location_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="Location Name" />
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/edit_text_location_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location Name" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/button_add_location_name"

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- TODO: Modify your searchable configuration.
+
+Required fields:
+label - This should be your application name
+
+Optional fields:
+hint - Not required, but useful for letting users know what they can search.
+
+What you will need to update:
+1. Declare the search authority with the provided content provider (DictionaryProvider).
+2. Declare the intent action.
+3. Declare the intent data.
+4. Include results in global search.
+-->
+
+<!-- The attributes below configure the Android search box appearance
+     and the search suggestions settings.
+
+     For the complete list of settings:
+     http://developer.android.com/guide/topics/search/searchable-config.html
+-->
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:hint="@string/search_hint"
+    android:includeInGlobalSearch="true"
+    android:searchSettingsDescription="@string/search_description"
+    android:label="@string/app_name"
+
+    android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
+    android:searchSuggestAuthority="com.marshong.packitup"
+    android:searchSuggestIntentAction="android.intent.action.VIEW"
+    android:searchSuggestIntentData="content://com.marshong.packitup/item_table"
+    android:searchSuggestSelection=" ?"
+    android:searchSuggestThreshold="1">
+
+</searchable>
+
+    <!--GOTCHA: choose searchSuggestAuthority to populate the selectionArgs with the query.
+                Use searchSuggestIntentAction attribute to define the action of the intent when the user clicks on a
+                search suggestion. ACTION_VIEW is commonly used.
+                searchSuggestIntentData needs to be included also, so when the user clicks, the row ID of whatever
+                was clicked is sent as part of the intent data.
+
+    -->
+
+<!--SearchSuggestThreshold means suggestions won't start be looked up until you hit the number of characters specified.-->
+<!--    http://www.grokkingandroid.com/android-tutorial-adding-suggestions-to-search/-->

@@ -117,6 +117,7 @@
     <string name="hint_item_name">Item Name</string>
     <string name="hint_item_descr">Item Description</string>
     <string name="title_activity_update_item">Update an Item</string>
+    <string name="picture">Picture</string>
 
     <!--Location Activity-->
     <string name="title_activity_add_location">Add Location</string>
@@ -130,5 +131,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_update_container">UpdateContainerActivity</string>
 
+
+    <!--Search strings-->
+    <string name="search_hint">Search PackItUp App</string>
+    <string name="search_description">Search the App.</string>
 
 </resources>

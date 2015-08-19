@@ -2,7 +2,11 @@ package com.marshong.packitup.ui.item;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -12,7 +16,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -22,6 +28,7 @@ import com.marshong.packitup.model.Item;
 import com.marshong.packitup.ui.storage.SectionFragment;
 import com.marshong.packitup.ui.storage.StorageListActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class UpdateItemActivity extends ActionBarActivity {
@@ -100,9 +107,55 @@ public class UpdateItemActivity extends ActionBarActivity {
         private EditText mEditTextUpdateItemDescr;
         private Spinner mSpinnerUpdateContainers;
 
+        static final int REQUEST_IMAGE_CAPTURE = 1;
+        static final int REQUEST_TAKE_PHOTO = 1;
+
+        private Button mPictureButton;
+        private ImageView mImageView;
+
 
         public UpdateItemFragment() {
         }
+
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                mImageView.setImageBitmap(imageBitmap);
+            }
+        }
+
+        private void galleryAddPic() {
+            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            /*File f = new File(mCurrentPhotoPath);
+            Uri contentUri = Uri.fromFile(f);
+            mediaScanIntent.setData(contentUri);
+            getActivity().sendBroadcast(mediaScanIntent);*/
+        }
+
+        private void dispatchTakePictureIntent() {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                File photoFile = null;
+/*                try {
+                    //photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                    Log.e(TAG, ex.toString());
+                }*/
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            Uri.fromFile(photoFile));
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+            }
+        }
+
 
         private int findContainerPos(ArrayList<String> containers, String containerName) {
             Log.d(TAG, "findContainerPos using containerName: " + containerName + " and containers " + containers.size());
@@ -189,7 +242,7 @@ public class UpdateItemActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_update_item, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_update_item, container, false);
 
             Log.d(TAG, "onCreateView updateItemFragment");
 
@@ -226,6 +279,18 @@ public class UpdateItemActivity extends ActionBarActivity {
                 containerPos = 1;
             }
             mSpinnerUpdateContainers.setSelection(containerPos);
+
+
+            mPictureButton = (Button) rootView.findViewById(R.id.button_take_picture);
+            mPictureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(rootView, "Take a picture", Snackbar.LENGTH_SHORT).show();
+                    dispatchTakePictureIntent();
+                }
+            });
+
+            mImageView = (ImageView) rootView.findViewById(R.id.imageview_thumbnail);
 
 
             rootView.findViewById(R.id.button_update_item).setOnClickListener(new View.OnClickListener() {

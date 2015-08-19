@@ -71,6 +71,9 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
         Log.d(TAG, "getPageTitle: " + position);
         mSelectedContainerId = Integer.parseInt(mContainerIds[position]);   //need to set the current container Id to the one that was just selected
         Log.d(TAG, "setting selectedContainerId to: " + mSelectedContainerId);
+
+
+
         return mContainerNames[position];
     }
 

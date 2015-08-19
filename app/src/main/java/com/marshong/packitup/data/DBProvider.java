@@ -1,6 +1,7 @@
 package com.marshong.packitup.data;
 
 
+import android.app.SearchManager;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -42,6 +43,7 @@ public class DBProvider extends ContentProvider {
     private static final int OWNER_ID = 400;
     private static final int OWNER_NAME = 401;
 
+    private static final int SEARCH_SUGGEST = 501;
 
     private static UriMatcher createUriMatcher() {
         Log.d(TAG, "creating URI Matcher using " + DBContract.CONTENT_AUTHORITY);
@@ -61,11 +63,15 @@ public class DBProvider extends ContentProvider {
 
         uriMatcher.addURI(authority, DBContract.PATH_CONTAINER, CONTAINER_NAME);
         uriMatcher.addURI(authority, DBContract.PATH_CONTAINER + "/#", CONTAINER_ID);
-        uriMatcher.addURI(authority, DBContract.PATH_CONTAINER_FILTERED , CONTAINER_FILTER);
+        uriMatcher.addURI(authority, DBContract.PATH_CONTAINER_FILTERED, CONTAINER_FILTER);
         //uriMatcher.addURI(authority, DBContract.PATH_CONTAINER + "/container_filter/", CONTAINER_FILTER);
 
         uriMatcher.addURI(authority, DBContract.PATH_LOCATION, LOCATION_NAME);
         uriMatcher.addURI(authority, DBContract.PATH_LOCATION + "/#", LOCATION_ID);
+
+        //add matcher for search suggest
+        uriMatcher.addURI(authority, SearchManager.SUGGEST_URI_PATH_QUERY, SEARCH_SUGGEST);
+        uriMatcher.addURI(authority, SearchManager.SUGGEST_URI_PATH_QUERY + "/*", SEARCH_SUGGEST);
 
         return uriMatcher;
     }
@@ -80,6 +86,32 @@ public class DBProvider extends ContentProvider {
         //instantiate a new DBHelper class
         mDbHelper = new DBHelper(getContext());
         return true;
+    }
+
+
+    private Cursor getSuggestions(String query) {
+        Log.d(TAG, "getSuggestions " + query);
+        query = query.toLowerCase();
+        String[] columns = new String[]{
+                DBContract.Item.ITEM_ID,
+                SearchManager.SUGGEST_COLUMN_TEXT_1,
+       /* SearchManager.SUGGEST_COLUMN_SHORTCUT_ID,
+                        (only if you want to refresh shortcuts) */
+                SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID};
+
+        Cursor cursor = mDbHelper.getWordMatches(query, columns);
+
+        Log.d(TAG, "container count: " + cursor.getCount());
+        Log.d(TAG, "index: " + cursor.getColumnIndex(DBContract.Item.ITEM_NAME));
+        if (cursor.getCount() > 0 && (cursor.moveToFirst())) {
+            do {
+                //Toast.makeText(getContext(),"found " + cursor.getString(1),Toast.LENGTH_LONG).show();
+                Log.d(TAG, "9999999999999999999999999999 " + cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+        return cursor;
+        //return null;
     }
 
     //GOTCHA: Make sure the column name of the ID, extends from BaseColumns._ID
@@ -99,6 +131,31 @@ public class DBProvider extends ContentProvider {
         Log.d(TAG, "URI Type: " + uriType);
 
         switch (uriType) {
+            case SEARCH_SUGGEST:
+                //selection args must be provided for this uri type
+                Log.d(TAG, "SEARCH_SUGGEST called... selectionsArgs[0]: " + selectionArgs[0]);
+
+                // Set the table name after you determine which uri type was chosen
+                queryBuilder.setTables(DBContract.Item.ITEM_TABLE);
+
+                //GOTCHA: selectionArgs is not null because we added an attribute in
+                //the searchable.xml
+
+                id = selectionArgs[0];
+                Log.d(TAG, "looking for Item ID: " + id);
+
+                projection = DBContract.Item.ITEM_PROJECTION;
+                selection = "ITEM_NAME LIKE ?";
+                selectionArgs = new String[]{id + "%"};
+
+                if (selectionArgs == null) {
+                    throw new IllegalArgumentException(
+                            "selectionArgs must be provided for the Uri: " + uri);
+                }
+                return getSuggestions(selectionArgs[0]);
+
+            //break;
+            //return getSuggestions(selectionArgs[0]);
             case ITEM_ID:
                 // Set the table name after you determine which uri type was chosen
                 queryBuilder.setTables(DBContract.Item.ITEM_TABLE);
@@ -189,12 +246,15 @@ public class DBProvider extends ContentProvider {
 
         Log.d(TAG, "setting queryBuilder table(s) to: " + queryBuilder.getTables());
         String dProj = "";
-        for (String s : projection) {
-            dProj += s + " ";
+
+        if (null != projection) {
+            for (String s : projection) {
+                dProj += s + " ";
+            }
         }
         Log.d(TAG, "projection: " + dProj);
 
-        if (null!= selectionArgs) {
+        if (null != selectionArgs) {
             String dSel = "";
             for (String s : selectionArgs) {
                 dSel += s + " ";
@@ -206,6 +266,7 @@ public class DBProvider extends ContentProvider {
 
 
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
         Cursor cursor = queryBuilder.query(
                 db,
                 projection,
@@ -220,6 +281,15 @@ public class DBProvider extends ContentProvider {
         //So after updating something in the DB, call getContext().getContentResolver().notifyChange(insertedId, null);
         //like in method "insert" below
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        Log.d(TAG, "container count: " + cursor.getCount());
+        Log.d(TAG, "index: " + cursor.getColumnIndex(DBContract.Item.ITEM_NAME));
+        if (cursor.getCount() > 0 && (cursor.moveToFirst())) {
+            do {
+                //Toast.makeText(getContext(),"found " + cursor.getString(1),Toast.LENGTH_LONG).show();
+                Log.d(TAG, "9999999999999999999999999999 " + cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
 
         return cursor;
     }
