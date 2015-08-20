@@ -44,21 +44,52 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"></Spinner>
 
-    <Button
-        android:id="@+id/button_update_item"
+    <!--    <Button
+        android:id="@+id/button_add_to_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update" />
+        android:text="@string/add_to_gallery" />-->
 
-    <Button
-        android:id="@+id/button_take_picture"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/picture" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_update_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update" />
+
+        <Button
+            android:id="@+id/button_take_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/picture" />
+
+        <Button
+            android:id="@+id/button_upload_imgur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_imgur" />
+
+        <Button
+            android:id="@+id/button_delete_imgur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_imgur" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textview_image_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sample" />
 
     <ImageView
         android:id="@+id/imageview_thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 
 </LinearLayout>

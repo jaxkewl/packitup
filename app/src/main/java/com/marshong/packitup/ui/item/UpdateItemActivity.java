@@ -1,13 +1,18 @@
 package com.marshong.packitup.ui.item;
 
+import android.app.Notification;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,16 +25,36 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marshong.packitup.R;
 import com.marshong.packitup.data.DBContract;
+import com.marshong.packitup.model.Image;
+import com.marshong.packitup.model.ImageD;
+import com.marshong.packitup.model.ImageDelete;
+import com.marshong.packitup.model.ImageUpload;
 import com.marshong.packitup.model.Item;
+import com.marshong.packitup.service.ImageDeleteService;
+import com.marshong.packitup.service.ImageUploadService;
 import com.marshong.packitup.ui.storage.SectionFragment;
 import com.marshong.packitup.ui.storage.StorageListActivity;
+import com.marshong.packitup.util.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class UpdateItemActivity extends ActionBarActivity {
 
@@ -93,6 +118,7 @@ public class UpdateItemActivity extends ActionBarActivity {
         ArrayList<String> mContainerNames;
         ArrayList<String> mContainerIds;
 
+        private View mRootView;
 
         //this is the locationId, we need to know this so the container spinner can only show containers from this location
         private int mLocationId;
@@ -111,7 +137,311 @@ public class UpdateItemActivity extends ActionBarActivity {
         static final int REQUEST_TAKE_PHOTO = 1;
 
         private Button mPictureButton;
+        private Button mAddToGalleryButton;
         private ImageView mImageView;
+
+
+        // ---------------------------------------------
+        //variables needed for camera
+        // ---------------------------------------------
+        private String mCurrentPhotoPath;
+        private File mPhotoFile = null;
+        private Uri mUriPicPath;
+
+
+        // ---------------------------------------------
+        //variables needed for Imgur upload and delete
+        // ---------------------------------------------
+
+        private String mUser;
+
+        // Use NotificationCompat for backwards compatibility
+        private NotificationManagerCompat mNotificationManager;
+
+        // Unique (within app) ID for email Notification
+        public static final int UPLOAD_NOTIFICATION_ID = 1;
+
+        /**
+         * Upload object containing image and meta data
+         */
+        private ImageUpload mUpload;
+
+        /**
+         * Delete object containing deletehash and meta data
+         */
+        private ImageDelete mDelete;
+
+
+        /**
+         * Chosen file from intent
+         */
+        private File mChosenFile;
+
+        //@Bind(R.id.textview_image_location)
+        private TextView mTextViewImageLocation;
+
+        @Bind(R.id.button_upload_imgur)
+        Button mButtonUploadImage;
+
+        @Bind(R.id.button_delete_imgur)
+        Button mButtonDeleteImage;
+
+        @OnClick(R.id.button_delete_imgur)
+        public void confirmDelete() {
+            String deleteHash = captureDeletehash();
+            //deleteImage(deletehash);
+            //deleteKeyFromSharedPref(fileKey);
+
+            //reload the activity
+            getActivity().finish();
+            startActivity(getActivity().getIntent());
+        }
+
+
+        //this method will use the URL in the argument to return the matching delete hash
+        //that was saved off when the image was initially uploaded anonymously
+        private String captureDeletehash() {
+            String deletehash = "";
+
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, getActivity().MODE_PRIVATE);
+
+            Map<String, ?> keys = sharedPref.getAll();
+
+            //if the shred pref contains the upload key and ends with delete, then we found the deletehash
+            for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                if (entry.getKey().equals(mItemId + "_delete")) {
+                    Log.d(TAG, "***************** found delete hash ***************** " + entry.getKey() + ": " + entry.getValue().toString());
+                    return entry.getValue().toString();
+                }
+            }
+            return deletehash;
+        }
+
+        private void deleteKeyFromSharedPref(String key) {
+            Log.d(TAG, "deleteKeyFromSharedPref " + key);
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, getActivity().MODE_PRIVATE);
+
+            Map<String, ?> keys = sharedPref.getAll();
+
+            for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                Log.d(TAG, "***************** ***************** " + entry.getKey() + ": " + entry.getValue().toString());
+
+                if (entry.getKey().contains(key)) {
+                    Log.d(TAG, "deleting key " + entry.getKey());
+                    sharedPref.edit().remove(entry.getKey()).commit();
+                } else if (entry.getValue().toString().contains(key)) {
+                    Log.d(TAG, "deleting key because value contains what we are looking for " + entry.getKey());
+                    sharedPref.edit().remove(entry.getKey()).commit();  //GOTCHA: call commit right after removing key
+                }
+
+            }
+            displayAllSharedPref();
+        }
+
+        public void deleteImage(String deletehash) {
+            Log.d(TAG, "deleteImage clicked " + deletehash);
+
+            if (null == deletehash) {
+                return;
+            }
+
+            // Wrap the chosen image in an upload object (to be sent to API).
+            createDelete(deletehash);
+
+            // Initiate delete
+            new ImageDeleteService(getActivity()).execute(mDelete, new UiCallbackDel());
+
+        }
+
+
+        private class UiCallbackDel implements Callback<ImageD> {
+
+            @Override
+            public void success(ImageD imageResponse, Response response) {
+                Log.d(TAG, "success called... this is a callback after deleting an image ");
+                Snackbar.make(mRootView, "delete successful " + response.toString(), Snackbar.LENGTH_LONG).show();
+/*
+            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(getContext())
+                            .setSmallIcon(R.drawable.notification_template_icon_bg)
+                            .setContentTitle("Image Uploaded to Imgur")
+                            .setContentText("Delete URL: " + deleteUrl);
+
+            // Create the notification
+            Notification basicNotification = builder.build();
+
+            mNotificationManager.notify(UPLOAD_NOTIFICATION_ID, basicNotification);
+*/
+
+
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                //Assume we have no connection, since error is null
+                if (error == null) {
+                    Snackbar.make(mRootView, "No internet connection", Snackbar.LENGTH_SHORT).show();
+                }
+
+                Snackbar.make(mRootView, "failure to delete " + error.toString(), Snackbar.LENGTH_LONG).show();
+                Log.d(TAG, "failure to delete... " + error.toString());
+
+/*            NotificationCompat.Builder builder =
+                    new NotificationCompat.Builder(getContext())
+                            .setSmallIcon(R.drawable.notification_template_icon_bg)
+                            .setContentTitle("Image Failed to upload to Imgur")
+                            .setContentText("Try again");
+
+            // Create the notification
+            Notification basicNotification = builder.build();
+
+            mNotificationManager.notify(UPLOAD_NOTIFICATION_ID, basicNotification);*/
+            }
+        }
+
+
+        @OnClick(R.id.button_upload_imgur)
+        public void uploadImage() {
+            Log.d(TAG, "Upload Image button clicked, uploading image");
+
+            if (mChosenFile == null) {
+                return;
+            }
+
+            // Wrap the chosen image in an upload object (to be sent to API).
+            createUpload(mChosenFile);
+
+            // Initiate upload
+            new ImageUploadService(getActivity()).execute(mUpload, new UiCallback());
+        }
+
+        private void createDelete(String deletehash) {
+            mDelete = new ImageDelete();
+            mDelete.deletehash = deletehash;
+        }
+
+        private void createUpload(File image) {
+            Log.d(TAG, "createUpload called.... %%%% " + image.getPath());
+
+            mUpload = new ImageUpload();
+            mUpload.image = image;
+            //mUpload.title = mUploadTitle.getText().toString();
+            //mUpload.description = mUploadDesc.getText().toString();
+        }
+
+
+        private void captureUploadedImage() {
+            Log.d(TAG, "captureUploadedImage called... mItemId: " + mItemId);
+
+            displayAllSharedPref();
+
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, getActivity().MODE_PRIVATE);
+
+            Map<String, ?> keys = sharedPref.getAll();
+
+            for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                Log.d(TAG, "***************** ***************** " + entry.getKey() + ": " + entry.getValue().toString());
+                if (entry.getKey().equals(Integer.toString(mItemId))) {
+
+                    String loadFile = entry.getValue().toString();
+                    Log.d(TAG, "Found it " + loadFile);
+                    mTextViewImageLocation.setText(loadFile);
+                    //mImageView.setImageURI(Uri.parse(loadFile));
+                    Picasso
+                            .with(getActivity())
+                            .load(loadFile)
+                            .fit() // will explain later
+                            .error(R.drawable.abc_btn_radio_material)
+                            .into(mImageView);
+                    break;
+                }
+            }
+        }
+
+
+        private void displayAllSharedPref() {
+            Log.d(TAG, "displayAllSharedPref called");
+
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, MODE_PRIVATE);
+
+            Map<String, ?> keys = sharedPref.getAll();
+
+            for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                Log.d(TAG, "***************** ***************** " + entry.getKey() + ": " + entry.getValue().toString());
+            }
+        }
+
+        private void saveDeleteUrl(String deletehash) {
+            Log.d(TAG, "saveDeleteUrl called... " + deletehash + " " + mItemId);
+
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(mItemId + "_delete", deletehash);
+            editor.commit();
+
+            displayAllSharedPref();
+        }
+
+        private void saveUploadedImage(String imageUrl) {
+            Log.d(TAG, "saveUploadedImage called... " + mItemId + " " + imageUrl);
+
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.sharedPrefName, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(Integer.toString(mItemId), imageUrl);
+            editor.commit();
+
+            displayAllSharedPref();
+        }
+
+
+
+
+        private class UiCallback implements Callback<Image> {
+
+            @Override
+            public void success(Image imageResponse, Response response) {
+                //String deleteUrl = "https://api.imgur.com/3/image/" + imageResponse.getDeletehash();
+                Log.d(TAG, "success called... this is a callback after uploading an image " + imageResponse.getId() + " " + imageResponse.getLink() + " deletehash: " + imageResponse.getDeletehash());
+
+                saveDeleteUrl(imageResponse.getDeletehash());
+                saveUploadedImage(imageResponse.getLink());
+                mTextViewImageLocation.setText(imageResponse.getLink());
+
+                NotificationCompat.Builder builder =
+                        new NotificationCompat.Builder(getActivity())
+                                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                                .setContentTitle("Image Uploaded to Imgur")
+                                .setContentText("Delete Hash: " + imageResponse.getDeletehash());
+
+                // Create the notification
+                //Notification basicNotification = builder.build();
+
+                //mNotificationManager.notify(UPLOAD_NOTIFICATION_ID, basicNotification);
+
+                // Reset the fields
+                //clearInput();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                //Assume we have no connection, since error is null
+                if (error == null) {
+                    Snackbar.make(mRootView, "No internet connection", Snackbar.LENGTH_SHORT).show();
+                    Log.e(TAG, "no internet connection");
+                }
+
+                NotificationCompat.Builder builder =
+                        new NotificationCompat.Builder(getActivity())
+                                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                                .setContentTitle("Image Failed to upload to Imgur")
+                                .setContentText("Try again");
+
+                // Create the notification
+                Notification basicNotification = builder.build();
+
+                mNotificationManager.notify(UPLOAD_NOTIFICATION_ID, basicNotification);
+            }
+        }
 
 
         public UpdateItemFragment() {
@@ -121,39 +451,81 @@ public class UpdateItemActivity extends ActionBarActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                mImageView.setImageBitmap(imageBitmap);
+                //Bundle extras = data.getExtras();
+                Bitmap imageBitmap = null;
+                try {
+                    imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), mUriPicPath);
+                    mImageView.setImageBitmap(imageBitmap);
+                    saveUploadedImage(mUriPicPath.getPath());   //save off local path to the textview
+                    mTextViewImageLocation.setText(mUriPicPath.getPath());
+                    Log.d(TAG, "%%%%%% image saved to: " + mUriPicPath.getPath());
+                    mChosenFile = new File(mUriPicPath.getPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                //Bitmap imageBitmap = (Bitmap) extras.get("data");
+                //Bitmap imageBitmap = (Bitmap) mPhotoFile;
             }
         }
 
         private void galleryAddPic() {
+            Snackbar.make(mRootView, "%%%%%%%%%Adding picture to gallery: " + mCurrentPhotoPath, Snackbar.LENGTH_SHORT).show();
+            Log.d(TAG, "adding to gallery " + mCurrentPhotoPath);
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            /*File f = new File(mCurrentPhotoPath);
+            File f = new File(mCurrentPhotoPath);
             Uri contentUri = Uri.fromFile(f);
             mediaScanIntent.setData(contentUri);
-            getActivity().sendBroadcast(mediaScanIntent);*/
+            getActivity().sendBroadcast(mediaScanIntent);
         }
 
         private void dispatchTakePictureIntent() {
+
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                 // Create the File where the photo should go
-                File photoFile = null;
-/*                try {
-                    //photoFile = createImageFile();
+
+                try {
+                    mPhotoFile = createImageFile();
+                    Snackbar.make(mRootView, mCurrentPhotoPath, Snackbar.LENGTH_SHORT).show();
+                    Log.d(TAG, "%%%%%%%%% " + mCurrentPhotoPath);
                 } catch (IOException ex) {
                     // Error occurred while creating the File
                     Log.e(TAG, ex.toString());
-                }*/
+                }
                 // Continue only if the File was successfully created
-                if (photoFile != null) {
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                            Uri.fromFile(photoFile));
+                if (mPhotoFile != null) {
+                    mUriPicPath = Uri.fromFile(mPhotoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mUriPicPath);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
             }
+        }
+
+        private File createImageFile() throws IOException {
+            // Create an image file name
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            File image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+
+            // Save a file: path for use with ACTION_VIEW intents
+            mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+
+            //check to see if file exists
+            if (image.exists()) {
+                Log.d(TAG, "%%%%%%%% file exists " + image);
+            } else {
+                Log.d(TAG, "%%%%%%%% file does not exist " + image);
+            }
+
+            return image;
         }
 
 
@@ -243,9 +615,12 @@ public class UpdateItemActivity extends ActionBarActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             final View rootView = inflater.inflate(R.layout.fragment_update_item, container, false);
-
+            mRootView = rootView;
             Log.d(TAG, "onCreateView updateItemFragment");
 
+            ButterKnife.bind(this, rootView);
+
+            mTextViewImageLocation = (TextView) rootView.findViewById(R.id.textview_image_location);
 
             Bundle extras = getActivity().getIntent().getExtras();
             mItemId = extras.getInt(SectionFragment.ITEM_ID);
@@ -281,6 +656,15 @@ public class UpdateItemActivity extends ActionBarActivity {
             mSpinnerUpdateContainers.setSelection(containerPos);
 
 
+/*            mAddToGalleryButton = (Button) rootView.findViewById(R.id.button_add_to_gallery);
+            mAddToGalleryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Snackbar.make(rootView, "Adding to Gallery", Snackbar.LENGTH_SHORT).show();
+                    galleryAddPic();
+                }
+            });*/
+
             mPictureButton = (Button) rootView.findViewById(R.id.button_take_picture);
             mPictureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -315,6 +699,8 @@ public class UpdateItemActivity extends ActionBarActivity {
                 }
             });
 
+
+            captureUploadedImage();
 
             return rootView;
         }

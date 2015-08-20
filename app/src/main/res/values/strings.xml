@@ -117,7 +117,12 @@
     <string name="hint_item_name">Item Name</string>
     <string name="hint_item_descr">Item Description</string>
     <string name="title_activity_update_item">Update an Item</string>
-    <string name="picture">Picture</string>
+    <string name="picture">Pic</string>
+    <string name="add_to_gallery">Add To Gallery</string>
+    <string name="upload_imgur">Upload</string>
+    <string name="delete_imgur">Delete</string>
+
+
 
     <!--Location Activity-->
     <string name="title_activity_add_location">Add Location</string>
