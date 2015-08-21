@@ -138,7 +138,9 @@ public class UpdateItemActivity extends ActionBarActivity {
 
         private Button mPictureButton;
         private Button mAddToGalleryButton;
-        private ImageView mImageView;
+
+        @Bind(R.id.imageview_thumbnail)
+        ImageView mImageView;
 
 
         // ---------------------------------------------
@@ -188,9 +190,12 @@ public class UpdateItemActivity extends ActionBarActivity {
 
         @OnClick(R.id.button_delete_imgur)
         public void confirmDelete() {
+            Log.d(TAG, "confirm delete called... ");
+
             String deleteHash = captureDeletehash();
-            //deleteImage(deletehash);
-            //deleteKeyFromSharedPref(fileKey);
+            Log.d(TAG, "deleteHash found: " + deleteHash);
+            deleteImage(deleteHash);
+
 
             //reload the activity
             getActivity().finish();
@@ -226,11 +231,11 @@ public class UpdateItemActivity extends ActionBarActivity {
             for (Map.Entry<String, ?> entry : keys.entrySet()) {
                 Log.d(TAG, "***************** ***************** " + entry.getKey() + ": " + entry.getValue().toString());
 
-                if (entry.getKey().contains(key)) {
+                if (entry.getKey().equals(key)) {
                     Log.d(TAG, "deleting key " + entry.getKey());
                     sharedPref.edit().remove(entry.getKey()).commit();
-                } else if (entry.getValue().toString().contains(key)) {
-                    Log.d(TAG, "deleting key because value contains what we are looking for " + entry.getKey());
+                } else if (entry.getKey().equals(key + "_delete")) {
+                    Log.d(TAG, "deleting key " + entry.getKey());
                     sharedPref.edit().remove(entry.getKey()).commit();  //GOTCHA: call commit right after removing key
                 }
 
@@ -259,7 +264,10 @@ public class UpdateItemActivity extends ActionBarActivity {
             @Override
             public void success(ImageD imageResponse, Response response) {
                 Log.d(TAG, "success called... this is a callback after deleting an image ");
-                Snackbar.make(mRootView, "delete successful " + response.toString(), Snackbar.LENGTH_LONG).show();
+
+                deleteKeyFromSharedPref(Integer.toString(mItemId));
+
+                Snackbar.make(mRootView, "Delete Successful", Snackbar.LENGTH_LONG).show();
 /*
             NotificationCompat.Builder builder =
                     new NotificationCompat.Builder(getContext())
@@ -346,9 +354,10 @@ public class UpdateItemActivity extends ActionBarActivity {
                     String loadFile = entry.getValue().toString();
                     Log.d(TAG, "Found it " + loadFile);
                     mTextViewImageLocation.setText(loadFile);
+                    mImageView.setImageResource(R.drawable.duct_tape);
                     //mImageView.setImageURI(Uri.parse(loadFile));
                     Picasso
-                            .with(getActivity())
+                            .with(getActivity().getApplicationContext())
                             .load(loadFile)
                             .fit() // will explain later
                             .error(R.drawable.abc_btn_radio_material)
@@ -394,15 +403,13 @@ public class UpdateItemActivity extends ActionBarActivity {
         }
 
 
-
-
         private class UiCallback implements Callback<Image> {
 
             @Override
             public void success(Image imageResponse, Response response) {
                 //String deleteUrl = "https://api.imgur.com/3/image/" + imageResponse.getDeletehash();
                 Log.d(TAG, "success called... this is a callback after uploading an image " + imageResponse.getId() + " " + imageResponse.getLink() + " deletehash: " + imageResponse.getDeletehash());
-
+                Snackbar.make(mRootView, "Image Uploaded", Snackbar.LENGTH_LONG).show();
                 saveDeleteUrl(imageResponse.getDeletehash());
                 saveUploadedImage(imageResponse.getLink());
                 mTextViewImageLocation.setText(imageResponse.getLink());
@@ -674,7 +681,7 @@ public class UpdateItemActivity extends ActionBarActivity {
                 }
             });
 
-            mImageView = (ImageView) rootView.findViewById(R.id.imageview_thumbnail);
+            //mImageView = (ImageView) rootView.findViewById(R.id.imageview_thumbnail);
 
 
             rootView.findViewById(R.id.button_update_item).setOnClickListener(new View.OnClickListener() {

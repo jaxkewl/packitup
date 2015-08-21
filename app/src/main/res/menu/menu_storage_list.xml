@@ -22,21 +22,21 @@
         android:icon="@drawable/ic_action_action_location"
         android:orderInCategory="205"
         android:title="Add Location"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/addStorageContainer"
         android:icon="@drawable/ic_add_container_icon"
         android:orderInCategory="210"
         android:title="Add Storage"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/add_item"
         android:icon="@drawable/ic_add_item"
         android:orderInCategory="215"
         android:title="Add Item"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
 <!--    <item
         android:id="@+id/action_search"
